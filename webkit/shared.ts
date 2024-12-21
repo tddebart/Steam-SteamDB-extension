@@ -7,6 +7,6 @@ export function getCdn(path: string) {
 
 declare global{
     interface Window {
-        browser: any;
+        steamDBBrowser: any;
     }
 }

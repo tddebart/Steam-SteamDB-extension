@@ -3,17 +3,19 @@ import { CDN, VERSION } from "./shared";
 
 // In this file we emulate the extension browser api for the steamdb extension
 
+window.steamDBBrowser = {};
+const steamDBBrowser = window.steamDBBrowser;
+
 //#region Browser storage / options
-window.browser = {};
-window.browser.storage = {};
-window.browser.storage.sync = {};
-window.browser.storage.sync.onChanged = {};
-window.browser.runtime = {};
-window.browser.runtime.id = 'kdbmhfkmnlmbkgbabkdealhhbfhlmmon'; // Chrome
+steamDBBrowser.storage = {};
+steamDBBrowser.storage.sync = {};
+steamDBBrowser.storage.sync.onChanged = {};
+steamDBBrowser.runtime = {};
+steamDBBrowser.runtime.id = 'kdbmhfkmnlmbkgbabkdealhhbfhlmmon'; // Chrome
 
 export const STORAGE_KEY = 'steamdb-options';
 
-window.browser.storage.sync.get = async function (items: any): Promise<any> {
+steamDBBrowser.storage.sync.get = async function (items: any): Promise<any> {
     let storedData = localStorage.getItem(STORAGE_KEY);
     let result: { [key: string]: any } = {};
     let parsedData: { [key: string]: any } = {};
@@ -43,7 +45,7 @@ window.browser.storage.sync.get = async function (items: any): Promise<any> {
     return result;
 }
 
-window.browser.storage.sync.set = async function (item: { [key: string]: any }) {
+steamDBBrowser.storage.sync.set = async function (item: { [key: string]: any }) {
     let storedData = localStorage.getItem(STORAGE_KEY);
     let parsedData: { [key: string]: any } = {};
 
@@ -67,27 +69,27 @@ window.browser.storage.sync.set = async function (item: { [key: string]: any }) 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(parsedData));
 }
 
-window.browser.storage.sync.onChanged = {};
+steamDBBrowser.storage.sync.onChanged = {};
 let storageListeners: ((changes: { [key: string]: { oldValue: any; newValue: any; } }) => void)[] = [];
-window.browser.storage.sync.onChanged.addListener = function (callback: (changes: { [key: string]: { oldValue: any; newValue: any; } }) => void) {
+steamDBBrowser.storage.sync.onChanged.addListener = function (callback: (changes: { [key: string]: { oldValue: any; newValue: any; } }) => void) {
     storageListeners.push(callback);
 }
 //#endregion
 
 //#region fake permissions
-window.browser.permissions = {};
-window.browser.permissions.request = function () {};
-window.browser.permissions.onAdded = {};
-window.browser.permissions.onAdded.addListener = function () {};
-window.browser.permissions.onRemoved = {};
-window.browser.permissions.onRemoved.addListener = function () {};
-window.browser.permissions.contains = function (_: any, callback: (result: boolean) => void) {
+steamDBBrowser.permissions = {};
+steamDBBrowser.permissions.request = function () {};
+steamDBBrowser.permissions.onAdded = {};
+steamDBBrowser.permissions.onAdded.addListener = function () {};
+steamDBBrowser.permissions.onRemoved = {};
+steamDBBrowser.permissions.onRemoved.addListener = function () {};
+steamDBBrowser.permissions.contains = function (_: any, callback: (result: boolean) => void) {
     callback(true);
 };
 //#endregion
 
 // #region i18n Translation
-window.browser.i18n = {};
+steamDBBrowser.i18n = {};
 const langKey = "steamDB_en";
 async function getLang() {
     if (localStorage.getItem(langKey + VERSION) === null) {
@@ -114,7 +116,7 @@ getLang();
     }
 }
 */
-window.browser.i18n.getMessage = function (messageKey: string, substitutions: string|string[]) {
+steamDBBrowser.i18n.getMessage = function (messageKey: string, substitutions: string|string[]) {
     if (messageKey === '@@bidi_dir') {
         return messageKey;
     }
@@ -145,20 +147,20 @@ window.browser.i18n.getMessage = function (messageKey: string, substitutions: st
 
     return messageTemplate;
 }
-window.browser.i18n.getUILanguage = function () {
+steamDBBrowser.i18n.getUILanguage = function () {
     return 'en-US';
 }
 // #endregion
 
 //#region getResourceUrl
-window.browser.runtime = {};
+steamDBBrowser.runtime = {};
 
-window.browser.runtime.getURL = function (res: string) {
+steamDBBrowser.runtime.getURL = function (res: string) {
     return CDN + "/" + res;
 }
 //#endregion
 
-window.browser.runtime.sendMessage = async function (message: any) {
+steamDBBrowser.runtime.sendMessage = async function (message: any) {
     const method = callable<[any]>(message.contentScriptQuery);
     let response = await method(message) as string;
     return JSON.parse(response);

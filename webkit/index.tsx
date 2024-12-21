@@ -21,6 +21,14 @@ async function loadScript(src: string) {
     });
 }
 
+function loadScriptWithContent(scriptString: string) {
+    var script = document.createElement('script');
+    script.setAttribute('type', 'text/javascript');
+    script.innerHTML = scriptString;
+
+    document.head.appendChild(script);
+}
+
 async function loadStyle(src: string) {
     return new Promise<void>((resolve, reject) => {
         var style = document.createElement('link');
@@ -54,8 +62,9 @@ async function loadPageSpecificScripts() {
 
 export default async function WebkitMain () {
     console.log("SteamDB plugin is running...");
-
-    await loadScript(getCdn("scripts/common.min.js"));
+    let commonScript = await (await fetch(getCdn('scripts/common.min.js'))).text();
+    commonScript = commonScript.replaceAll('browser', 'steamDBBrowser');
+    loadScriptWithContent(commonScript);
     await loadScript(getCdn("scripts/global.min.js"));
 
     loadPageSpecificScripts(); 
